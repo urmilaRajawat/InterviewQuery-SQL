@@ -1,0 +1,27 @@
+Q. https://www.interviewquery.com/questions/total-time-in-flight
+
+Sol.
+with same_day as (
+    select id, destination_location, source_location, plane_id, flight_start, flight_end, TIMESTAMPDIFF(minute, flight_start, flight_end) as time_in_min
+    from flights 
+    where date(flight_start) = date(flight_end)
+    ),
+    over_night as (
+    select id, destination_location, source_location, plane_id, flight_start, flight_end, TIMESTAMPDIFF(minute, flight_start, date(flight_end)) as first_day_time_in_min, TIMESTAMPDIFF(minute, date(flight_end), flight_end) as second_day_time_in_min
+    from flights 
+    where date(flight_start) != date(flight_end)
+    ),
+    duration as (
+    select plane_id, date(flight_start) as calendar_day, time_in_min
+    from same_day 
+    union all 
+    select plane_id, date(flight_start) as calendar_day, first_day_time_in_min
+    from over_night 
+    union all 
+    select plane_id, date(flight_end) as calendar_day, second_day_time_in_min
+    from over_night
+    where second_day_time_in_min != 0
+    )
+select plane_id, calendar_day, floor(sum(time_in_min)) as time_in_min
+from duration 
+group by plane_id, calendar_day
