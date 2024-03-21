@@ -1,0 +1,24 @@
+QUESTION LINK:
+https://www.interviewquery.com/questions/departmental-spend-by-quarter
+
+
+SOLUTION :
+
+SELECT
+(CASE WHEN transaction_date BETWEEN "2023-01-01" AND "2023-03-31"
+THEN "Q1"
+ WHEN transaction_date BETWEEN "2023-04-01" AND "2023-06-30"
+THEN "Q2"
+ WHEN transaction_date BETWEEN "2023-07-01" AND "2023-09-30"
+THEN "Q3"
+ WHEN transaction_date BETWEEN "2023-10-01" AND "2023-12-31"
+THEN "Q4" 
+END
+) AS quarter,
+SUM(CASE WHEN department = 'IT' THEN amount ELSE 0 END) AS it_spending,
+SUM(CASE WHEN department = 'HR' THEN amount ELSE 0 END) AS hr_spending,
+SUM(CASE WHEN department = 'MARKETING' THEN amount ELSE 0 END) AS marketing_spending,
+SUM(CASE WHEN department NOT IN ('IT', 'HR', 'Marketing') THEN amount ELSE 0 END) AS other_spending
+
+from transactions
+GROUP BY quarter;
