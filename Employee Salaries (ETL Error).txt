@@ -1,0 +1,12 @@
+QUESTION LINK:
+https://www.interviewquery.com/questions/employee-salaries-etl-error
+
+
+SOLUTION :
+
+WITH lastest_records as (
+    SELECT first_name, last_name, salary,RANK() OVER (PARTITION BY first_name,last_name ORDER BY id DESC) as current
+    FROM employees )
+SELECT first_name, last_name, salary
+FROM lastest_records
+WHERE current = 1;
