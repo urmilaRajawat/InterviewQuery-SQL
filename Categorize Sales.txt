@@ -1,0 +1,14 @@
+QUESTION LINK:
+https://www.interviewquery.com/questions/categorize-sales
+
+SOLUTION :
+SELECT 
+    region, 
+    SUM(sale_amount)AS total_sales, 
+    SUM(CASE WHEN sale_date BETWEEN "2023-07-01" AND "2023-07-31" THEN sale_amount ELSE 0 END) AS promotional_sales,
+    SUM(CASE WHEN region = "East" AND sale_date NOT BETWEEN "2023-07-01" AND "2023-07-31" THEN sale_amount ELSE 0 END) AS premium_sales,
+    SUM(CASE WHEN sale_amount < 2000 AND region!= "East" AND sale_date NOT BETWEEN "2023-07-01" AND "2023-07-31" THEN sale_amount ELSE 0 END) AS standard_sales
+FROM
+    sales
+GROUP BY 1
+
