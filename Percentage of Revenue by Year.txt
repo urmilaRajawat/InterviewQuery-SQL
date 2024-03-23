@@ -1,0 +1,18 @@
+QUESTION LINK:https://www.interviewquery.com/questions/percentage-of-revenue-by-year
+
+
+
+SOLUTION :
+select ROUND(SUM(
+    CASE WHEN 
+    year(created_at)=(select min(year(created_at)) from annual_payments) 
+    THEN amount-amount_refunded end
+    )/SUM(amount-amount_refunded)*100,2) as percent_first,
+    
+    ROUND(SUM(
+    CASE WHEN 
+    year(created_at)=(select max(year(created_at)) from annual_payments) 
+    THEN amount-amount_refunded end
+    )/SUM(amount-amount_refunded)*100,2) as percent_last
+from annual_payments
+
