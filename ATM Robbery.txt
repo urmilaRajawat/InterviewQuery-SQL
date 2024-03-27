@@ -1,0 +1,16 @@
+QUESTION LINK:
+https://www.interviewquery.com/questions/atm-robbery#comments
+
+
+SOLUTION :
+
+WITH CTE AS (SELECT t1.user_id, t1.created_at AS first_trans, t2.created_at AS second_tran
+FROM
+bank_transactions t1
+JOIN bank_transactions t2 
+ON t1.created_at <> t2.created_at)
+SELECT DISTINCT user_id
+FROM 
+CTE
+WHERE ABS(TIMESTAMPDIFF(SECOND, first_trans, second_tran)) = 10
+ORDER BY user_id;
