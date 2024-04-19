@@ -1,0 +1,16 @@
+QUESTION LINK:
+https://www.interviewquery.com/questions/180-day-job-postings
+
+SOLUTION :
+with jobs as (
+    SELECT 
+        job_id, 
+        is_revoked, 
+        dense_rank() over(partition by job_id order by date_posted desc) rnk
+    FROM job_postings
+    where date_posted >= (select cast(max(date_posted) as date) from job_postings)  - interval 180 day
+)
+SELECT
+  round(count(if(is_revoked, job_id, null))*100/count(1), 2) as percentage
+FROM jobs
+where rnk = 1
